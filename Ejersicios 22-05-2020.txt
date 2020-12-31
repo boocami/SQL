@@ -1,0 +1,78 @@
+EMPLEADOS: rut, nombre, cargo, rut_jefe, sueldo, comision, numdep
+DEPTO: numdep, nombre, ciudad, 
+GRADOS: grado, sueldo_info, sueldo_sup
+CLIENTES: rut, nombre, comuna
+PRODUCTOS: codigo(PK), nombre, precio
+VENTAS: num_venta(PK), monto, fecha, rut_vende, rut_cliente
+VENTAS_DETALLE: num_vent, cod_producto, cantidad
+
+1.-Numero de productos que valen mas de $250
+1.1-Selecciona los productos
+Select * from PRODUCTOS
+1.2 Select Count(PRODUCTOS.codigo) from PRODUCTOS --> a,s,d,f,g = 5
+1.3 Select Count(PRODUCTOS.codigo) from PRODUCTOS where PRODUCTOS.precio > 250
+
+2.-Monto total recaudado por las ventas hechas
+2.1- Select * from VENTAS
+2.2- Select Sum(VENTAS.monto) from VENTAS 
+ 
+3.-Cantidad total de mesas vendidadas
+
+3.1 SELECCIONAR LAS MESAS QUE ESTAN EN UN DETALLE VENTA(QUE FUERON VENDIDAS)
+Select * from PRODUCTOS join VENTAS_DETALLE on PRODUCTOS.codigo = VENTAS_DETALLE.cod_producto
+
+3.2 SUMAR LA CANTIDAD DE VENTAS
+Select SUM(VENTAS_DETALLE.cantidad) from PRODUCTOS join VENTAS_DETALLE on PRODUCTOS.codigo = VENTAS_DETALLE.cod_producto 
+
+3.3 CANTIDAD TOTAL DE MESAS VENDADIAS
+Select SUM(VENTAS_DETALLE.cantidad) from PRODUCTOS join VENTAS_DETALLE on PRODUCTOS.codigo = VENTAS_DETALLE.cod_producto where PRODUCTOS.nombre = 'mesas'
+
+4.-Total pagado por pepe por todas las compras que ha hecho
+
+4.1- SELECCIONAS LAS VENTAS
+Select * from VENTAS 
+
+4.2- BUSCAR EN VENTAS EL RUT DEL CLIENTE //t1 join t2 on t1.atributo = t2.atributo
+Select * from VENTAS join CLIENTES on VENTAS.rut_cliente = CLIENTES.rut
+
+4.3-SUMAR LAS COMPRAS QUE HA HECHO// FILTRASTE AL CLIENTE, PEPE
+Select SUM(VENTAS.monto) from VENTAS join CLIENTES on VENTAS.rut_cliente = CLIENTES.rut where CLIENTES.nombre = 'pepe' //ESTRUCTURA DE UN SELECT =  SELECT "TABLAS O *" FROM 'TABLA' JOIN WHERE(CONDICION)
+
+
+EMPLEADOS: rut, nombre, cargo, rut_jefe, sueldo, comision, numdep
+DEPTO: numdep, nombre, ciudad, 
+GRADOS: grado, sueldo_info, sueldo_sup
+CLIENTES: rut, nombre, comuna
+PRODUCTOS: codigo(PK), nombre, precio
+VENTAS: num_venta(PK), monto, fecha, rut_vende, rut_cliente
+VENTAS_DETALLE: num_vent, cod_producto, cantidad
+
+5.-Monto total de comisiones ganadas por ALLEN
+
+SELECT Sum(EMPLEADOS.comision) FROM EMPLEADOS WHERE EMPLEADOS.nombre = 'ALLEN'
+
+6.- Rut del jefe de SCOTT  /ESTRUCTURA DE UN SELECT =  SELECT "TABLAS O *" FROM 'TABLA' JOIN(RELACIONES) WHERE(CONDICION)
+
+Select * from EMPLEADOS
+select EMPLEADOS.rut_jefe from EMPLEADOS
+select EMPLEADOS.rut_jefe from EMPLEADOS where EMPLEADOS.nombre = 'SCOTT'
+
+7.- Nombre y precio del producto mas caro
+SELECT PRODUCTOS.NOMBRE, MAX(PRODUCTOS.precio) FROM PRODUCTOS group by PRODUCTOS.NOMBRE	/*FUNCIONES DE AGREGADO, SUM, MAX, MIN COUNT*//*HAVING*/
+
+8.- Nombre y sueldo del empleado|| de NEW YORK ||que tiene el peor sueldo|| //t1 join t2 on t1.atributo = t2.atributo
+SELECT [ATRIBUTOS] FROM [TABLAS] (JOIN) (WHERE) 
+
+SELECT EMPLEADOS.nombre, EMPLEADOS.sueldo, MIN(EMPLEADOS.sueldo) FROM EMPLEADOS JOIN DEPTO ON EMPLEADOS.numdep = DEPTOS.numdep WHERE DEPTO.ciudad = 'NEW YORK' GROUP BY EMPLEADOS.nombre, EMPLEADOS.sueldo
+
+9.-Nombre del vendedor ||que ha vendido ||el producto mas caro||
+
+Select EMPLEADOS.nombre, MAX(PRODUCTOS.precio) From EMPLEADOS JOIN VENTAS ON EMPLEADOS.rut = VENTAS.rut_vende
+					JOIN VENTAS_DETALLE ON VENTAS.num_venta = VENTAS_DETALLE.num_ventas 
+					JOIN PRODUCTO on VENTAS_DETALLE.cod_producto = PRODUCTOS.codigo 
+					WHERE EMPLEADOS.cargo = 'vendedor' group by EMPLEADOS.nombre
+
+
+
+****SELECIONAME LA SUMA DE LA CANTIDAD DE VENTAS_DETALLES DONDE EN PRODUCTOS CUANDO CODIGO DE PRODUCTOS SEA IGUAL AL CODIGO PRODUCTOS DE LA VENTAS_DETALLES
+			

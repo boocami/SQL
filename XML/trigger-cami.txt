@@ -1,0 +1,17 @@
+create table logdetalle(idventa int,cantidad int)
+
+create trigger trg_detalle on tbl_detalle for insert
+as
+declare @idventa int
+declare @cont int
+set @idventa=(select ID_intVenta from inserted)
+
+if not exists(select idventa from logdetalle where idventa=@idventa)
+begin
+	insert into logdetalle values(@idventa,1)
+end
+else
+begin
+	set @cont=(select cantidad from logdetalle where idventa=@idventa)
+	update logdetalle set cantidad=@cont+1 where idventa=@idventa
+end

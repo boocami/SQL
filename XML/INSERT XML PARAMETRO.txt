@@ -1,0 +1,154 @@
+alter procedure ProcesaXML
+	@xml1 ntext, --Autor
+	@xml2 ntext  --Libros
+as
+Declare @iDoc int
+Declare @iDoc2 int
+Declare @codigo int
+Declare @nomautor varchar(50)
+Declare @nacio varchar(50)
+Declare @codigoautor2 int
+Declare @nomlib varchar(50)
+Declare @valor int
+Declare @descuento int
+
+execute sp_xml_preparedocument @iDoc OUTPUT, @xml1
+Declare CursorAutor Cursor For
+	select * from OPENXML (@iDoc, '/Autores/Autor',2)
+	with	(
+			codigo int,
+			nombre varchar(50),
+			nacionalidad varchar(50)
+			)
+Open CursorAutor
+Fetch CursorAutor Into @codigo, @nomautor, @nacio
+WHILE (@@FETCH_STATUS = 0)
+Begin
+	Print 'Autor es: ' + @nomautor
+		execute sp_xml_preparedocument @iDoc2 OUTPUT, @xml2
+		Declare CursorLibros Cursor For
+		select * from OPENXML (@iDoc2, '/Libros/Libro',2)
+		with	(
+			codigoAutor int,
+			nombre varchar(50),
+			valor int,
+			descuento int
+			)
+		Open CursorLibros
+		Fetch CursorLibros Into @codigoautor2, @nomlib, @valor, @descuento
+		WHILE (@@FETCH_STATUS = 0)
+		Begin
+			IF (@codigo = @codigoautor2)
+			Begin
+				print 'LIBRO: ' + @nomlib
+			End
+			Fetch CursorLibros Into @codigoautor2, @nomlib, @valor, @descuento
+		End
+		execute sp_xml_removedocument @iDoc2
+		Close CursorLibros
+		Deallocate CursorLibros
+	Fetch CursorAutor Into @codigo, @nomautor, @nacio
+End
+execute sp_xml_removedocument @iDoc
+Close CursorAutor
+Deallocate CursorAutor
+
+
+
+execute ProcesaXML '<Autores>
+	<Autor>
+		<codigo>1</codigo>
+		<nombre>Rimbaud</nombre>
+		<nacionalidad>Francesa</nacionalidad>
+	</Autor>
+	<Autor>
+		<codigo>2</codigo>
+		<nombre>Poe</nombre>
+		<nacionalidad>Norteamericano</nacionalidad>
+	</Autor>
+	<Autor>
+		<codigo>3</codigo>
+		<nombre>Baudelaire</nombre>
+		<nacionalidad>Francesa</nacionalidad>
+	</Autor>
+</Autores>', '<Libros>
+	<Libro>
+		<codigoAutor>1</codigoAutor>
+		<nombre>Temporada en el Infierno</nombre>
+		<valor>2323</valor>
+		<descuento>2</descuento>
+	</Libro>
+	<Libro>
+		<codigoAutor>1</codigoAutor>
+		<nombre>Iluminaciones</nombre>
+		<valor>223</valor>
+		<descuento>23</descuento>
+	</Libro>
+	<Libro>
+		<codigoAutor>2</codigoAutor>
+		<nombre>Obras Completas</nombre>
+		<valor>223</valor>
+		<descuento>23</descuento>
+	</Libro>
+	<Libro>
+		<codigoAutor>3</codigoAutor>
+		<nombre>El Spleen de Paris</nombre>
+		<valor>223</valor>
+		<descuento>23</descuento>
+	</Libro>
+	<Libro>
+		<codigoAutor>3</codigoAutor>
+		<nombre>No me acuerdo otro libro</nombre>
+		<valor>223</valor>
+		<descuento>23</descuento>
+	</Libro>
+</Libros>'
+
+
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+<Autores>
+	<Autor>
+		<codigo>1</codigo>
+		<nombre>Rimbaud</nombre>
+		<nacionalidad>Francesa</nacionalidad>
+	</Autor>
+	<Autor>
+		<codigo>1</codigo>
+		<nombre>Poe</nombre>
+		<nacionalidad>Norteamericano</nacionalidad>
+	</Autor>
+</Autores>
+
+
+<Libros>
+	<Libro>
+		<codigoAutor>1</codigoAutor>
+		<nombre>Temporada en el Infierno</nombre>
+		<valor>2323</valor>
+		<descuento>2</descuento>
+	</Libro>
+	<Libro>
+		<codigoAutor>1</codigoAutor>
+		<nombre>Iluminaciones</nombre>
+		<valor>223</valor>
+		<descuento>23</descuento>
+	</Libro>
+	<Libro>
+		<codigoAutor>2</codigoAutor>
+		<nombre>Obras Completas</nombre>
+		<valor>223</valor>
+		<descuento>23</descuento>
+	</Libro>
+</Libros>

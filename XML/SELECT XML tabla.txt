@@ -1,0 +1,26 @@
+alter procedure pa_AutorLib
+as
+Declare @idautor int
+Declare @nomAutor varchar(50)
+Declare @xmlLib xml
+Declare @iDoc int
+
+Declare CursorAutor Cursor For
+	select ID_intAutor, vchNomAutor, xmlLibros from tbl_AutorPaso
+Open CursorAutor
+Fetch CursorAutor Into @idautor, @nomAutor, @xmlLib
+While (@@FETCH_STATUS = 0)
+Begin
+	--Insert into tbl_Autor (ID_intAutor, vchNomAutor) values (@idautor, @nomAutor)
+	execute sp_xml_preparedocument @iDoc OUTPUT, @xmlLib
+	select * from OPENXML (@iDoc, '/Libros/Libro',2)
+	with	(
+			identificador int,
+			nombre varchar(50),  --nombre elemento xml
+			valor int
+			)
+	execute sp_xml_removedocument @iDoc
+	Fetch CursorAutor Into @idautor, @nomAutor, @xmlLib
+End 
+Close CursorAutor
+Deallocate CursorAutor

@@ -1,0 +1,14 @@
+Aerolineas  : id_aerolinea, nombre, sigla 
+Aeropuertos : id_aeropuerto, nombre , ciudad, codigo 
+Rutas       : vuelo, id_aeropuerto
+Vuelos      : id_vuelo,vuelo,id_aerolinea, fecha, pasajeros 
+Tripulacion : id_vuelo, rut
+Empleados   : rut, nombre ,cargo 
+
+1) Nombre y rut  de los capitanes que vuelan en ruta con escala o destino en arica sin repetir
+2) Nombre de las aerolineas que llegan con sus servicios a la ciudad de buenos aires
+3) Cual es el vuelo que transporta más pasajeros
+4) Cuantos pasajeros se transportan en promedio en la santiago - bogota
+5) Cuales son los cargos que estan presenten en vuelo
+6) Ordene las aerolineas de mayor a menor  según las cantidad de vuelos que esta disponga
+7) Aerolineas y vuelos que tienen viajes directos sin escalas
